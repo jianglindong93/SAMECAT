@@ -1384,14 +1384,6 @@ summarized_results_cache = pd.concat([div_tract_cache, summarized_results_cache]
 summarized_results_cache.to_csv(summarized_results_path + bmd_site + '_samecat_summarized_results.csv', index=False)
 
 
-# In[28]:
-
-
-div_list
-
-
-# In[ ]:
-
 
 
 
