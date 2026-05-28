@@ -39,8 +39,6 @@ Modifications were made to better accommodate our analyses.
 
 class MIOSTONETree:
     """
-    Adapted from https://github.com/batmen-lab/MIOSTONE.
-
     Attributes:
         ete_tree (ete3.Tree): An ete3 Tree instance.
         depths (dict): A dictionary mapping feature names to their depths in the tree.
