@@ -106,7 +106,7 @@ def load_balances(path, PB, bmd_name, dtype, condition = '_'):
 Codes related with deep divergence-based clustering and contrastive learning 
 were adapted from https://github.com/DanielTrosten/mvc/tree/main/src/lib.
 
-Modifications were made to better accommodate our analysis.
+Modifications were made to better accommodate our analyses.
 """
 
 def kernel_from_distance_matrix(dist, rel_sigma, min_sigma=EPSILON):
