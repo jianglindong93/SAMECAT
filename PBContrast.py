@@ -559,14 +559,6 @@ def hidden_kernel(hidden, rel_sigma = 0.15):
     return vector_kernel(hidden, rel_sigma)
 
 
-def mse_loss(pred_x, x):
-    batch_size = x.size(0)
-    assert batch_size != 0
-    mse_loss_val = F.mse_loss(pred_x, x, reduction='sum').div(batch_size)
-    
-    return mse_loss_val
-
-
 def rmse_loss(pred_x, x):
     batch_size = x.size(0)
     assert batch_size != 0
@@ -575,36 +567,6 @@ def rmse_loss(pred_x, x):
     
     return rmse_loss_val
 
-
-def orth_loss(z_a, z_b, eps=1e-9):
-    batch_size = z_a.size(0)
-
-    # Compute column means
-    mu_a = torch.mean(z_a, dim=0, keepdim=True)  # shape (1, D)
-    mu_b = torch.mean(z_b, dim=0, keepdim=True)
-    
-    # Center
-    z_a_centered = z_a - mu_a                    # shape (N, D)
-    z_b_centered = z_b - mu_b
-
-    # Compute column‐wise std (unbiased? usually we use population std: division by N)
-    # Add a tiny eps for numerical stability
-    eps = 1e-10
-    sigma_a = torch.sqrt(torch.mean(z_a_centered ** 2, dim=0, keepdim=True) + eps)  # (1, D)
-    sigma_b = torch.sqrt(torch.mean(z_b_centered ** 2, dim=0, keepdim=True) + eps)
-
-    # Normalize to unit variance
-    z_a_norm = z_a_centered / sigma_a    # (N, D)
-    z_b_norm = z_b_centered / sigma_b    # (N, D)
-
-    # 2) Compute cross‐correlation matrix C of shape (D, D)
-    #    C_{ij} = (1/N) * sum_n [ z_a_norm[n,i] * z_b_norm[n,j] ]
-    c = (z_a_norm.T @ z_b_norm) / batch_size  # (D, D)
-    
-    mean_sum_of_squares = torch.mean(c**2)
-    orthogonal_loss = torch.sqrt(mean_sum_of_squares + eps)
-    
-    return orthogonal_loss
 
 def get_r2(x, pred_x):
     r, _ = pearsonr(x, pred_x)
@@ -616,12 +578,12 @@ def get_r2(x, pred_x):
 # In[8]:
 
 
-class MTL_mgs_bmd(nn.Module):
+class PBContrast(nn.Module):
     def __init__(self, input_v1_n1, input_v5_n1, vbal_level1_dim, vcovar_level1_dim, 
                  fuse_level2_dim, level_hidden_dim, dc_h_dim, 
                  n_views, n_clusters, bal,
                  dropout_rate_1=0.01):
-        super(MTL_mgs_bmd, self).__init__()
+        super(PBContrast, self).__init__()
         
         self.n_clusters = n_clusters
         self.bal = bal
@@ -751,16 +713,16 @@ class Objective:
         # Model, loss function, optimization
         input_v1_n1 = balance_mask.size(1)
         input_v5_n1 = clinical_var_train.size(1)
-        model = MTL_mgs_bmd(input_v1_n1 = input_v1_n1, 
-                            input_v5_n1 = input_v5_n1, 
-                            vbal_level1_dim = trial.suggest_int('vbal_level1_dim', 2, 16, step = 2), 
-                            vcovar_level1_dim = trial.suggest_int('vcovar_level1_dim', 2, 16, step = 2), 
-                            fuse_level2_dim = trial.suggest_int('fuse_level2_dim', 2, 8, step = 2), 
-                            level_hidden_dim = trial.suggest_int('level_hidden_dim', 2, 4, step = 2), 
-                            dc_h_dim = trial.suggest_int('dc_h_dim', 2, 4, step = 2), 
-                            n_views = self.n_views, 
-                            n_clusters = n_clusters,
-                            bal = balance_mask)
+        model = PBContrast(input_v1_n1 = input_v1_n1, 
+                           input_v5_n1 = input_v5_n1, 
+                           vbal_level1_dim = trial.suggest_int('vbal_level1_dim', 2, 16, step = 2), 
+                           vcovar_level1_dim = trial.suggest_int('vcovar_level1_dim', 2, 16, step = 2), 
+                           fuse_level2_dim = trial.suggest_int('fuse_level2_dim', 2, 8, step = 2), 
+                           level_hidden_dim = trial.suggest_int('level_hidden_dim', 2, 4, step = 2), 
+                           dc_h_dim = trial.suggest_int('dc_h_dim', 2, 4, step = 2), 
+                           n_views = self.n_views, 
+                           n_clusters = n_clusters,
+                           bal = balance_mask)
         model = model.double()
         if torch.cuda.is_available():
             model.cuda()
@@ -833,10 +795,10 @@ class Objective:
 # In[32]:
 
 
-def testMTL_mgs_bmd(data_path, balance_path, PB, bmd_site, bmd_name,  
-                    use_mask, mask_path, mask_name, condition,
-                    best_params_dict, init_model_params_dict, model_path, div, 
-                    n_views = 2, dtype = torch.float64, save_pred_results = True):
+def testPBContrast(data_path, balance_path, PB, bmd_site, bmd_name,  
+                   use_mask, mask_path, mask_name, condition,
+                   best_params_dict, init_model_params_dict, model_path, div, 
+                   n_views = 2, dtype = torch.float64, save_pred_results = True):
     summarized_results_dict = {}
     summarized_results_dict.update(best_params_dict)
     
@@ -872,12 +834,12 @@ def testMTL_mgs_bmd(data_path, balance_path, PB, bmd_site, bmd_name,
     
     init_model_params = {key: best_params_dict[key] for key in init_model_params_dict if key in best_params_dict}
     
-    model = MTL_mgs_bmd(input_v1_n1 = input_v1_n1,
-                        input_v5_n1 = input_v5_n1, 
-                        n_views = n_views, 
-                        n_clusters = n_clusters,
-                        bal = balance_mask,
-                        **init_model_params)
+    model = PBContrast(input_v1_n1 = input_v1_n1,
+                       input_v5_n1 = input_v5_n1, 
+                       n_views = n_views, 
+                       n_clusters = n_clusters,
+                       bal = balance_mask,
+                       **init_model_params)
     model = model.double()
     os.makedirs(model_path, exist_ok=True)
     if torch.cuda.is_available():
@@ -939,7 +901,7 @@ def testMTL_mgs_bmd(data_path, balance_path, PB, bmd_site, bmd_name,
         if epoch2 % 100 == 0:
             print(f'{div} Testing Stage Phase 2 - Epoch [{epoch2}/{p2_epoch_num}], Overall Training Loss: {loss_tune:.4f}, Training Loss: {pred_loss.item():.4f}, Testing Loss: {loss_test.item():.4f}')
     
-    torch.save(model.state_dict(), model_path + div + condition + PB + '_PBContrast_optparam_mtl_mgs_bmd_testing.pt')
+    torch.save(model.state_dict(), model_path + div + condition + PB + '_PBContrast_optparam_testing.pt')
     
     tune_bmd = np.asarray(bmd_tune.detach().cpu().numpy(), dtype=np.float64).reshape(-1)
     tune_bmd_dict = {bmd_name: tune_bmd}
@@ -1021,9 +983,9 @@ for PB in PB_methods:
         study.optimize(objective, n_trials=100)
     
         best_params_dict = study.best_trial.params
-        summarized_results_dict = testMTL_mgs_bmd(data_path, balance_path, PB, bmd_site, bmd_name,
-                                                  use_mask, mask_path, mask_name, condition,
-                                                  best_params_dict, init_model_params_dict, model_path, div)
+        summarized_results_dict = testPBContrast(data_path, balance_path, PB, bmd_site, bmd_name,
+                                                 use_mask, mask_path, mask_name, condition,
+                                                 best_params_dict, init_model_params_dict, model_path, div)
         summarized_results_cache.append(summarized_results_dict)
         div_track.append(div)
 
