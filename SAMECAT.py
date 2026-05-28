@@ -315,9 +315,6 @@ class _Fusion(nn.Module):
     def __init__(self):
         """
         Base class for the fusion module
-
-        :param cfg: Fusion config. See config.defaults.Fusion
-        :param input_sizes: Input shapes
         """
         super().__init__()
 
@@ -340,9 +337,6 @@ class Mean(_Fusion):
     def __init__(self):
         """
         Mean fusion.
-
-        :param cfg: Fusion config. See config.defaults.Fusion
-        :param input_sizes: Input shapes
         """
         super().__init__()
 
@@ -353,9 +347,6 @@ class Mean(_Fusion):
 class WeightedMean(_Fusion):
     """
     Weighted mean fusion.
-
-    :param cfg: Fusion config. See config.defaults.Fusion
-    :param input_sizes: Input shapes
     """
     def __init__(self, n_views):
         super().__init__()
@@ -469,7 +460,6 @@ class Contrastive:
     def __init__(self, n_clusters, contrastive_similarity = "cos", negative_samples_ratio = 0.25):
         """
         Contrastive loss function
-
         """
         super().__init__()
         self.large_num = large_num
@@ -612,7 +602,6 @@ class Contrastive:
     def _loss_with_negative_sampling(self, output, projections, net, v, tau = 0.1, adaptive_contrastive_weight = True, delta = 0.1):
         """
         Contrastive loss implementation with negative sampling.
-
         """
         n = output.size(0)
         logits = self.similarity_func(projections) / tau
@@ -633,7 +622,6 @@ class Contrastive:
     def _loss_without_negative_sampling(self, projections, net, v, tau = 0.1, adaptive_contrastive_weight = True, delta = 0.1):
         """
         Contrastive loss implementation without negative sampling.
-
         """
         assert v == 2, "Contrastive loss without negative sampling only supports 2 views."
         n, h1, h2 = self._normalized_projections(projections)
