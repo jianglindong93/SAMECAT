@@ -2050,8 +2050,3 @@ summarized_results_cache = pd.concat([div_tract_cache, summarized_results_cache]
 summarized_results_cache.to_csv(summarized_results_path + bmd_site[0] + '_taxoma_summarized_results_2.csv', index=False)
 
 
-# In[ ]:
-
-
-
-
