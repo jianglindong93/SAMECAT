@@ -37,31 +37,6 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 DEBUG_MODE = False
 
 
-# In[4]:
-
-
-pip install captum
-
-
-# In[2]:
-
-
-pip install ete3
-
-
-# In[3]:
-
-
-pip install optuna
-
-
-# In[1]:
-
-
-from google.colab import drive
-drive.mount('/content/drive')
-
-
 # In[2]:
 
 
