@@ -321,8 +321,6 @@ for bmd_site in bmd_site_list:
         summarized_results_cache.to_csv(summarized_results_path + PB + "_" + bmd_site + "_en_summarized_results.csv", index=False)
 
 
-# In[ ]:
-
 
 
 
