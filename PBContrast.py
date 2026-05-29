@@ -978,7 +978,6 @@ for PB in PB_methods:
     summarized_results_cache.to_csv(summarized_results_path + PB + condition + bmd_name + "_pbcontrast_summarized_results.csv", index=False)
 
 
-# In[ ]:
 
 
 
