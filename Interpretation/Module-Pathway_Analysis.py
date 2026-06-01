@@ -24,7 +24,7 @@ root_path_eg = root_path + 'EG_interpretation_results/'
 bmd_site = 'bmd_site' #FNECK, HTOT, STOT, R13
 root_path_spectral = root_path_eg + "eg_spectral_outputs/" + bmd_site + "/eg_final_outputs/"
 bmd_site_path = None
-target_div = 'determined by the internal evaluation, see EG_computation.py'
+target_div = 'Determined by the internal evaluation, see EG_computation.py'
 if bmd_site == 'FNECK':
     bmd_site_path = 'NECK_BMD_' + target_div
 elif bmd_site == 'HTOT':
