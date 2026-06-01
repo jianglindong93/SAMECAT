@@ -17,7 +17,7 @@ from scipy.sparse.csgraph import connected_components
 
 # ====== INITIAL SETTINGS ======
 EG_CSV_PATH = 'EG_results_path/EG_attr_mgs_test_df.csv'
-OUT_DIR = 'output_results_path'
+OUT_DIR = 'output_results_path/'
 
 # Sweep grid (start small, then expand)
 K_NN_LIST     = [15, 20, 30, 40]
