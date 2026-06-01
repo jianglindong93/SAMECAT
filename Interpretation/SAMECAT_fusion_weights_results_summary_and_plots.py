@@ -33,12 +33,6 @@ stot_combined_df = pd.read_csv(master_path + "spine_total_bmd_samecat_fusion_wei
 r13_combined_df = pd.read_csv(master_path + "R_13_BMD_samecat_fusion_weights.csv")
 
 
-# In[6]:
-
-
-fneck_combined_df
-
-
 # In[5]:
 
 
