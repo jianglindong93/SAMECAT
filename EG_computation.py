@@ -583,7 +583,7 @@ class MIOSTONEModel(nn.Module):
     def get_total_l0_reg(self):
         return self.total_l0_reg
 
-class MTL_mgs_bmd(nn.Module):
+class SAMECAT(nn.Module):
     def __init__(self, 
                  tree,
                  node_min_dim,
@@ -599,7 +599,7 @@ class MTL_mgs_bmd(nn.Module):
                  dc_h_dim, 
                  n_views, 
                  n_clusters):
-        super(MTL_mgs_bmd, self).__init__()
+        super(SAMECAT, self).__init__()
         
         self.n_clusters = n_clusters
         
@@ -766,7 +766,7 @@ def get_interpretation_results(bmd_site, root_path='root_path/',
     dc_h_dim = summarized_results.loc[opt_idx, 'dc_h_dim']
     n_clusters = summarized_results.loc[opt_idx, 'n_clusters']
     
-    model = MTL_mgs_bmd(
+    model = SAMECAT(
         tree=miostone_tree,
         node_min_dim=1,
         node_dim_func='linear',
@@ -839,7 +839,7 @@ def get_interpretation_results(bmd_site, root_path='root_path/',
 
 # In[12]:
 
-
+# Total Hip
 htot_loaded_data_train, htot_loaded_data_test, htot_attr_mgs_test_np, htot_attr_cov_test_np = get_interpretation_results(bmd_site='HTOT_BMD')
 
 
@@ -879,7 +879,7 @@ plt.show()
 
 # In[24]:
 
-
+# Femoral Neck
 neck_loaded_data_train, neck_loaded_data_test, neck_attr_mgs_test_np, neck_attr_cov_test_np = get_interpretation_results(bmd_site='NECK_BMD')
 
 
@@ -919,7 +919,7 @@ plt.show()
 
 # In[18]:
 
-
+# Total Spine
 spine_loaded_data_train, spine_loaded_data_test, spine_attr_mgs_test_np, spine_attr_cov_test_np = get_interpretation_results(bmd_site='spine_total_bmd')
 
 
@@ -959,7 +959,7 @@ plt.show()
 
 # In[21]:
 
-
+# One-Third Radius
 r13_loaded_data_train, r13_loaded_data_test, r13_attr_mgs_test_np, r13_attr_cov_test_np = get_interpretation_results(bmd_site='R_13_BMD')
 
 
@@ -997,126 +997,6 @@ plt.xlabel("EG values (impact on model output)")
 plt.show()
 
 
-# In[14]:
-
-
-root_path = 'D:/metagenome_new_analysis/Multi-task_mgs_bmd/ContrastMTL/'
-master_path = root_path + 'data_divisions_5/'
-tree_path = master_path + 'train_test_split/'
-use_mask = True
-mask_name = 'prev_filtered2'
-interpretation_results_path = root_path + 'EG interpretations/EG_interpretation_results/'
-output_cloud = r"C:/Users/JiangLindong/OneDrive - Tulane University/manuscript/Results/figures/Fig S6/"
-
-
-# In[48]:
-
-
-bmd_site = "R_13_BMD"
-if bmd_site == "NECK_BMD":
-    save_front_cov = "(a) FNECK"
-    save_front_mgs = "FNECK"
-    EG_mgs_path = interpretation_results_path + "NECK_BMD_tune_9_EG_attr_mgs_test_df.csv"
-    EG_cov_path = interpretation_results_path + "NECK_BMD_tune_9_EG_attr_cov_test_df.csv"
-elif bmd_site == "HTOT_BMD":
-    save_front_cov = "(b) HTOT"
-    save_front_mgs = "HTOT"
-    EG_mgs_path = interpretation_results_path + "HTOT_BMD_tune_10_EG_attr_mgs_test_df.csv"
-    EG_cov_path = interpretation_results_path + "HTOT_BMD_tune_10_EG_attr_cov_test_df.csv"
-elif bmd_site == "spine_total_bmd":
-    save_front_cov = "(c) STOT"
-    save_front_mgs = "STOT"
-    EG_mgs_path = interpretation_results_path + "spine_total_bmd_tune_7_EG_attr_mgs_test_df.csv"
-    EG_cov_path = interpretation_results_path + "spine_total_bmd_tune_7_EG_attr_cov_test_df.csv"
-elif bmd_site == "R_13_BMD":
-    save_front_cov = "(d) R13"
-    save_front_mgs = "R13"
-    EG_mgs_path = interpretation_results_path + "R_13_BMD_tune_3_EG_attr_mgs_test_df.csv"
-    EG_cov_path = interpretation_results_path + "R_13_BMD_tune_3_EG_attr_cov_test_df.csv"
-
-
-# In[49]:
-
-
-if use_mask:
-    miostone_tree = MIOSTONETree.init_from_nwk(tree_path + 'taxa_tree_' + mask_name + '.nwk')
-else:
-    miostone_tree = MIOSTONETree.init_from_nwk(tree_path + 'taxa_tree.nwk')
-miostone_tree.compute_depths()
-miostone_tree.compute_indices()
-
-dtype = torch.float64  # same as training
-
-# Reconstruct datasets like you did in training / testing
-loaded_data_train = MIOSTONEDataset.init_from_files(
-    master_path + 'train_test_split/', 'tu', bmd_site,
-    use_mask=use_mask, mask_path=tree_path, mask_name=mask_name
-)
-loaded_data_train.normalize()
-loaded_data_train.clr_transform()
-loaded_data_train.order_features_by_tree(miostone_tree)
-loaded_data_train.data_adaptation(dtype)
-
-loaded_data_test = MIOSTONEDataset.init_from_files(
-    master_path + 'train_test_split/', 'te', bmd_site,
-    use_mask=use_mask, mask_path=tree_path, mask_name=mask_name
-)
-loaded_data_test.normalize()
-loaded_data_test.clr_transform()
-loaded_data_test.order_features_by_tree(miostone_tree)
-loaded_data_test.data_adaptation(dtype)
-
-EG_mgs_np = pd.read_csv(EG_mgs_path).values
-EG_cov_np = pd.read_csv(EG_cov_path).values
-
-
-# In[50]:
-
-
-plt.figure(figsize=(8,6),dpi=300)
-shap.summary_plot(shap_values=EG_cov_np,
-                  features=loaded_data_test.meta_df,
-                  show=False, 
-                  plot_size='auto',
-                  max_display=15)
-# max_display: number of features to display
-    
-plt.title(save_front_cov + ' EG Summary Plot (clinical features)',fontsize=20)
-plt.xlabel("EG values (impact on model output)")
-plt.savefig(output_cloud + bmd_site + "_cov_figS6_300dpi.png",
-            format="png",
-            dpi=300,
-            bbox_inches="tight",
-            pad_inches=0.05
-    )
-plt.show()
-
-
-# In[51]:
-
-
-plt.figure(figsize=(8,6),dpi=300)
-mgs_features = loaded_data_test.X_df.copy()
-mgs_features.columns = loaded_data_test.features
-shap.summary_plot(shap_values=EG_mgs_np,
-                  features=mgs_features,
-                  show=False, 
-                  plot_size='auto',
-                  max_display=15)
-# max_display: number of features to display
-    
-plt.title(save_front_mgs + ' EG Summary Plot (top 15 microbiome species)',fontsize=20)
-plt.xlabel("EG values (impact on model output)")
-plt.savefig(output_cloud + bmd_site + "_mgs_figS6_300dpi.png",
-            format="png",
-            dpi=300,
-            bbox_inches="tight",
-            pad_inches=0.05
-    )
-plt.show()
-
-
-# In[ ]:
 
 
 
