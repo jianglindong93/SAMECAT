@@ -163,29 +163,6 @@ pathcov = pd.read_csv(PATH_PATHCOV)
 pathcov.shape
 
 
-# In[14]:
-
-
-from pathlib import Path
-
-PATH_PATHCOV = Path(PATH_PATHCOV)
-
-with PATH_PATHCOV.open("r", encoding="utf-8", errors="replace") as f:
-    header = f.readline().rstrip("\n\r")
-    expected = header.count("\t") + 1
-
-    bad = []
-    for i, line in enumerate(f, start=2):  # start=2 since header is line 1
-        n = line.rstrip("\n\r").count("\t") + 1
-        if n != expected:
-            bad.append((i, n))
-            if len(bad) >= 20:  # cap output
-                break
-
-print("Expected fields:", expected)
-print("First bad lines (line_number, fields):", bad[:20])
-
-
 # In[34]:
 
 
@@ -603,60 +580,10 @@ top_per_module = final_tbl.groupby("module").head(topK).copy()
 top_per_module
 
 
-# In[79]:
-
-
-# Build matrix of signed rho for top pathways
-pivot = top_per_module.pivot_table(index="pathway", columns="module", values="rho", aggfunc="first")
-
-plt.figure(figsize=(10, max(4, 0.25*len(pivot))))
-plt.imshow(pivot.fillna(0).values, aspect="auto")
-plt.colorbar(label="Spearman rho (ModuleEG vs ModulePathAb)")
-plt.yticks(range(len(pivot.index)), pivot.index)
-plt.xticks(range(len(pivot.columns)), [f"M{c}" for c in pivot.columns], rotation=0)
-plt.title("Top representative pathways per module (signed association)")
-plt.tight_layout()
-plt.show()
-
-
-# In[80]:
-
-
-def plot_top_prs_for_module(df, module_id, topK=10):
-    d = df[df["module"] == module_id].sort_values("PRS", ascending=False).head(topK)
-    if d.empty:
-        return
-    plt.figure(figsize=(10, 0.4*len(d)+2))
-    plt.barh(d["pathway"][::-1], d["PRS"][::-1])
-    plt.title(f"Module {module_id}: Top {topK} representative pathways (PRS)")
-    plt.xlabel("PRS = |rho| * log(1+mean_cov) * stability")
-    plt.tight_layout()
-    plt.show()
-
-for m in sorted(top_per_module["module"].unique()):
-    plot_top_prs_for_module(final_tbl, m, topK=10)
-
-
-# In[81]:
-
-
-plt.figure(figsize=(10,6))
-x = top_per_module["rho"].abs().values
-y = top_per_module["stability"].values
-s = (top_per_module["mean_cov"].clip(lower=0).values + 1e-6) * 500  # scale dot sizes
-
-plt.scatter(x, y, s=s)
-plt.xlabel("|Spearman rho|")
-plt.ylabel("Bootstrap stability")
-plt.title("Top module–pathway pairs: effect vs stability (dot size ~ mean coverage)")
-plt.tight_layout()
-plt.show()
-
-
 # In[82]:
 
 
-OUTDIR = "D:/metagenome_new_analysis/Multi-task_mgs_bmd/ContrastMTL/EG interpretations/EG_interpretation_results/eg_spectral_outputs/" + bmd_site + "/module_pathway_results"
+OUTDIR = "output_results_path/" + bmd_site + "/module_pathway_results"
 os.makedirs(OUTDIR, exist_ok=True)
 
 final_tbl.to_csv(os.path.join(OUTDIR, "representative_pathways_full_table.csv"), index=False)
@@ -667,7 +594,6 @@ tuning.to_csv(os.path.join(OUTDIR, "threshold_tuning_summary.csv"), index=False)
 print("Saved results to:", OUTDIR)
 
 
-# In[ ]:
 
 
 
