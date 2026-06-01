@@ -442,15 +442,15 @@ def bootstrap_hub_stability(
 # In[ ]:
 
 
-target_div = "Determined by the internal evaluation procedure, see EG_computation.py"
+# /*target_div*/: "Determined by the internal evaluation procedure, see EG_computation.py"
 site_inputs = {
-    "Femoral neck": (master_path + "NECK_BMD_" + target_div + "_EG_attr_mgs_test_df.csv",
+    "Femoral neck": (master_path + "NECK_BMD_" + "/*target_div_fneck*/" + "_EG_attr_mgs_test_df.csv",
                      master_path + "eg_spectral_outputs/FNECK/eg_final_outputs/fneck_final_assignments_original_and_merged.csv"),
-    "Total hip":    (master_path + "HTOT_BMD_" + target_div + "_EG_attr_mgs_test_df.csv",
+    "Total hip":    (master_path + "HTOT_BMD_" + "/*target_div_htot*/" + "_EG_attr_mgs_test_df.csv",
                      master_path + "eg_spectral_outputs/HTOT/eg_final_outputs/htot_final_assignments_original_and_merged.csv"),
-    "Total spine":  (master_path + "spine_total_bmd_" + target_div + "_EG_attr_mgs_test_df.csv",
+    "Total spine":  (master_path + "spine_total_bmd_" + "/*target_div_stot*/" + "_EG_attr_mgs_test_df.csv",
                      master_path + "eg_spectral_outputs/STOT/eg_final_outputs/stot_final_assignments_original_and_merged.csv"),
-    "1/3 radius":   (master_path + "R_13_BMD_" + target_div + "_EG_attr_mgs_test_df.csv",
+    "1/3 radius":   (master_path + "R_13_BMD_" + "/*target_div_r13*/" + "_EG_attr_mgs_test_df.csv",
                      master_path + "eg_spectral_outputs/R13/eg_final_outputs/r13_final_assignments_original_and_merged.csv"),
 }
 all_cs, all_hubs, all_boot = [], [], []
