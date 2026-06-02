@@ -286,7 +286,7 @@ root_path = "root_path/"
 tune_path = root_path + "summarized_results_path/"
 train_data_path = root_path + "bgi_data_folder/"
 lc_data_path = root_path + "lc_data_folder/"
-summarized_results_path = root_path + "summarized_results_path/"
+summarized_results_path = root_path + "lc_validation_ml/"
 os.makedirs(summarized_results_path, exist_ok=True)
 
 only_clinicvar = False
