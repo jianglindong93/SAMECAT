@@ -711,7 +711,7 @@ def samecat_validation_results(tune, miostone_tree, loaded_data_test,
 
 bmd_sites = ["NECK_BMD", "HTOT_BMD", "spine_total_bmd", "R_13_BMD"]
 use_mask = True
-mask_name = 'mask_name'
+mask_name = 'wozeroonlyspecies'
 root_path = "root_path/"
 model_path = root_path + "model_folder/"
 tune_path = root_path + "summarized_results_samecat/"
