@@ -1137,7 +1137,7 @@ def plot_feature_site_heatmap_with_phylo_tree_from_bootstrap_selected(
 
 
 fp_hub = master_path + "eg_spectral_outputs/Hub_features_selected_by_bootstrap_B300.csv"
-fp_tax = master_path + "microbe_names_wtzeroonlyspecies.csv"
+fp_tax = master_path + "microbe_names_wozeroonlyspecies.csv"
 site_order = ["Femoral neck", "Total hip", "Total spine", "1/3 radius"]
 
 fig, ax_tree, ax_label, ax, ax_bar, ax_cbar, mat, meta, filtered_df, tax_df, tree = plot_feature_site_heatmap_with_phylo_tree_from_bootstrap_selected(
