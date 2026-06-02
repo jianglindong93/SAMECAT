@@ -11,7 +11,7 @@ import optuna
 
 from sklearn.linear_model import ElasticNet
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error
 from scipy.stats import pearsonr
 
 
@@ -264,10 +264,8 @@ def en_validation_results(tune, X_train, y_train, X_test, y_test):
             "alpha": alpha,
             "l1_ratio": l1_ratio,
             "RMSE_train": rmse(y_train, yhat_train),
-            #"R2_train": float(r2_score(y_train, yhat_train)),
             "R2_train": float((pearsonr(y_train, yhat_train)[0])**2),
             "RMSE_test": rmse(y_test, yhat_test),
-            #"R2_test": float(r2_score(y_test, yhat_test)),
             "R2_test": float((pearsonr(y_test, yhat_test)[0])**2),
             "n_features": int(X_train.shape[1]),
             "n_train": int(X_train.shape[0]),
