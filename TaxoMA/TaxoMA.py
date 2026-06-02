@@ -1998,7 +1998,7 @@ summarized_results_path = root_path + 'summarized_results_taxoma_2/'
 os.makedirs(summarized_results_path, exist_ok=True)
 bmd_site = ['bmd_site'] #NECK_BMD, HTOT_BMD, spine_total_bmd, R_13_BMD
 use_mask = True
-mask_name = 'mask_name'
+mask_name = 'wozeroonlyspecies'
 
 
 # In[29]:
