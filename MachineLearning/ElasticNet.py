@@ -268,7 +268,7 @@ os.makedirs(summarized_results_path, exist_ok=True)
 PB_methods = ["all_species"]
 only_clinicvar = False
 use_selected_microbes = True
-mask_name = 'mask_name'
+mask_name = 'wozeroonlyspecies'
 for bmd_site in bmd_site_list:
     for PB in PB_methods:
         subject_id_tune, mra_tune, X_tune, Y_tune = load_data(data_path + "train_test_split/",
