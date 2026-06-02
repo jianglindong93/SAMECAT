@@ -422,7 +422,6 @@ for bmd_site in bmd_sites:
         results_df.to_csv(summarized_results_path + bmd_site + "_" + model_name + "_lc_validation_ml.csv", index = False)
 
 
-# In[ ]:
 
 
 
