@@ -1339,7 +1339,7 @@ summarized_results_path = root_path + 'summarized_results_samecat/'
 os.makedirs(summarized_results_path, exist_ok=True)
 bmd_site = 'bmd_site' #NECK_BMD, HTOT_BMD, spine_total_bmd, R_13_BMD
 use_mask = True
-mask_name = 'mask_name' # use this to remove species with only zero values in the tuning set samples.
+mask_name = 'mask_name' # wozeroonlyspecies, prev_filtered
 
 
 # In[35]:
