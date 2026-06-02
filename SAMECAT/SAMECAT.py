@@ -111,7 +111,6 @@ class MIOSTONETree:
 class MIOSTONEDataset(Dataset):
     """
     Handles Metagenomic relative abudance data + all preprocessing.
-    
     """
     
     def __init__(self, subject_id, X, meta, y, features):
