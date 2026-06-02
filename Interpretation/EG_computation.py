@@ -696,7 +696,7 @@ def compute_gs_batched(gs, wrapped_model, X, C, baseline_mgs, baseline_cov,
 
 def get_interpretation_results(bmd_site, root_path='root_path/', 
                                n_baselines=100, n_samples_eg=50, batch_size=64,
-                               use_mask=True, mask_name='mask_name',
+                               use_mask=True, mask_name='wtzeroonlyspecies',
                                save_results=True, print_results=True):
     master_path = root_path + 'data_folder/'
     tree_path = master_path + 'tree_folder/'
