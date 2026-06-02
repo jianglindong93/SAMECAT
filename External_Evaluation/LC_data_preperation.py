@@ -239,8 +239,6 @@ common_df.to_csv(
 ab2_aligned.to_csv(path2 + "microbe_comp_lc.csv", index=False)
 
 
-# In[ ]:
-
 
 
 
