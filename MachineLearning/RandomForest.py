@@ -206,7 +206,7 @@ os.makedirs(summarized_results_path, exist_ok=True)
 
 only_clinicvar = False
 use_selected_microbes = True
-mask_name = 'mask_name'
+mask_name = 'wozeroonlyspecies'
 PB_methods = ["all_species"]
 for bmd_site in bmd_site_list:
     for PB in PB_methods:
