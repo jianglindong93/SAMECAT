@@ -1169,18 +1169,6 @@ fig, ax_tree, ax_label, ax, ax_bar, ax_cbar, mat, meta, filtered_df, tax_df, tre
         mixed_branch_color="black"
     )
 
-output_pdf = "output_results_path/hub_species_summary_plot_300dpi.pdf"
-fig.savefig(
-    output_pdf,
-    bbox_inches="tight"
-)
-
-plt.show()
-
-
-# In[14]:
-
-
 output_pdf = "output_results_path/hub_species_summary_plot.pdf"
 output_png = "output_results_path/hub_species_summary_plot_300dpi.png"
 
@@ -1204,7 +1192,6 @@ fig.savefig(
 plt.show()
 
 
-# In[ ]:
 
 
 
